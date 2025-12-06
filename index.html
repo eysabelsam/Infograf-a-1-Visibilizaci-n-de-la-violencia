@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Violentómetro Digital - Termómetro de violencia digital con información sobre tipos y niveles de violencia." />
+    <title>Violentómetro - Termómetro</title>
+    <style>
+        :root {
+            --lila-fondo: #CFC1F7;
+            --lila-borde: #6B4BD6;
+            --blanco: #FFFFFF;
+            --texto: #333333;
+            --nivel1-bg: #E8DFFF;
+            --nivel1-accent: #A48BEA;
+            --nivel2-bg: #C7EAF6;
+            --nivel2-accent: #30A9DE;
+            --nivel3-bg: #FFD6EB;
+            --nivel3-accent: #E14086;
+            --nivel4-bg: #FFE6E6;
+            --nivel4-accent: #E53935;
+            --fuente: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box }
+        body {
+            font-family: var(--fuente);
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(180deg, #FBF9FF 0%, #FFF 100%);
+            color: var(--texto);
+        }
+
+        .wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .panel {
+            flex: 1;
+            border: 4px solid var(--lila-borde);
+            border-radius: 10px;
+            padding: 14px;
+            background: var(--blanco);
+        }
+
+        .panel h1 {
+            margin: 0 0 8px 0;
+            color: var(--lila-borde);
+            font-size: 20px;
+        }
+
+        .panel p {
+            margin: 6px 0;
+            color: #5a506f;
+        }
+
+        .termometro-box {
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .thermometer {
+            position: relative;
+            width: 72px;
+            height: 520px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 28px;
+        }
+
+        .tube {
+            position: relative;
+            width: 28px;
+            height: 420px;
+            border-radius: 16px;
+            border: 4px solid var(--lila-borde);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .fill {
+            position: absolute;
+            left: 0; right: 0;
+            bottom: 0;
+            height: 20%;
+            background: linear-gradient(180deg, var(--nivel2-accent), var(--nivel4-accent));
+            transition: height 600ms ease-in-out;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+        }
+
+        .bulb {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            border: 4px solid var(--lila-borde);
+            background: var(--blanco);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .mercury {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, var(--nivel2-accent), var(--nivel4-accent));
+            transition: background 600ms ease-in-out;
+        }
+
+        .ticks {
+            position: absolute;
+            left: calc(100% + 12px);
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px 0;
+            height: 420px;
+        }
+
+        .tick {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--texto);
+        }
+
+        .tick .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 3px solid var(--lila-borde);
+            background: var(--blanco);
+        }
+
+        .leyenda {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            border-radius: 8px;
+            padding: 10px;
+            border: 2px solid transparent;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.85));
+        }
+
+        .card .ico {
+            min-width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .card .text {
+            font-size: 14px;
+            color: var(--texto);
+        }
+
+        .c1 { border-color: var(--nivel1-accent); background: linear-gradient(180deg, var(--nivel1-bg), #FBF7FF); }
+        .c2 { border-color: var(--nivel2-accent); background: linear-gradient(180deg, var(--nivel2-bg), #F7FDFF); }
+        .c3 { border-color: var(--nivel3-accent); background: linear-gradient(180deg, var(--nivel3-bg), #FFF7FB); }
+        .c4 { border-color: var(--nivel4-accent); background: linear-gradient(180deg, var(--nivel4-bg), #FFF7F7); }
+
+        @media (max-width: 880px) {
+            .wrap { flex-direction: column; align-items: center }
+            .termometro-box { width: 100%; max-width: 420px }
+            .ticks { left: calc(100% + 8px) }
+        }
+
+        .card:focus, .card:focus-within { outline: 3px solid rgba(107, 75, 214, 0.15); }
+
+        .small { font-size: 13px; color: #6d627e; margin-top: 8px; }
+        .prevencion {
+            margin-top: 18px;
+        }
+
+        .prev-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #datos-violencia-digital {
+            background: #C7EAF6;
+            padding: 22px;
+            border-radius: 10px;
+        }
+
+        #datos-violencia-digital h2 {
+            margin: 0 0 18px 0;
+            color: #6B4BD6;
+            font-size: 1.45rem;
+        }
+
+        .estadisticas {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .stat {
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(20, 20, 40, 0.06);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .stat svg {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div style="position: relative; width: 100%; height: 0; padding-top: 36%; box-shadow: 0 2px 8px rgba(63, 69, 81, 0.16); margin: 1.6em 0; overflow: hidden; border-radius: 8px;">
+        <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none;" src="https://www.canva.com/design/DAG6nOQInvE/PNWO6LCfUKur1M-DUqGv-A/view?embed" allowfullscreen title="Diseño de Violentómetro"></iframe>
+    </div>
+    
+    <section>
+        <div style="position: relative; width: 100%; height: 0; padding-top: 50%; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden; border-radius: 8px;">
+            <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none;" src="https://www.canva.com/design/DAG6wYOs3SU/vM0dfXuZRo0gI8s0dJurhQ/view?embed" allowfullscreen></iframe>
+        </div>
+    </section>
+
+    <div style="position: relative; width: 100%; height: 0; padding-top: 36%; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden; border-radius: 8px;">
+        <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none;" src="https://www.canva.com/design/DAG6w5Iuius/ypTQ_AEkDNQA1NwUaGOWlw/view?embed" allowfullscreen></iframe>
+    </div>
+
+    <div style="position: relative; width: 100%; height: 0; padding-top: 50%; box-shadow: 0 2px 8px rgba(63, 69, 81, 0.16); margin: 1.6em 0; overflow: hidden; border-radius: 8px;">
+        <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none;" src="https://www.canva.com/design/DAG6l3xRtFk/tJ3dqQ3QzkTSzgFnX3EefQ/view?embed" allowfullscreen title="Consecuencias de la violencia digital"></iframe>
+    </div>
+
+    <div class="wrap">
+        <aside class="panel" aria-labelledby="titulo">
+            <h1 id="titulo">Guía visual para detectar violencia en línea</h1>
+            <p>Escala de gravedad representada como termómetro. Mueve la barra (o cambia el valor en el atributo data-level) para mostrar el nivel actual.</p>
+
+            <div class="leyenda" aria-hidden="false">
+                <div class="card c1" tabindex="0">
+                    <div class="ico">💬</div>
+                    <div class="text"><strong>Nivel 1 — Leve:</strong> Bromas ofensivas, mensajes repetitivos, exclusión.</div>
+                </div>
+                <div class="card c2" tabindex="0">
+                    <div class="ico">👁️</div>
+                    <div class="text"><strong>Nivel 2 — Moderado:</strong> Ciberacoso, rumores, stalking digital.</div>
+                </div>
+                <div class="card c3" tabindex="0">
+                    <div class="ico">🎭</div>
+                    <div class="text"><strong>Nivel 3 — Grave:</strong> Suplantación, difusión íntima sin consentimiento, discursos de odio.</div>
+                </div>
+                <div class="card c4" tabindex="0">
+                    <div class="ico">🚨</div>
+                    <div class="text"><strong>Nivel 4 — Muy grave:</strong> Sextorsión, grooming, espionaje digital.</div>
+                </div>
+                <p class="small">Consejo: ante niveles 3 y 4, guarda evidencia y contacta a las autoridades o a la plataforma.</p>
+            </div>
+        </aside>
+
+        <div class="termometro-box" aria-hidden="false">
+            <div class="thermometer" role="img" aria-label="Termómetro que representa nivel de violencia digital">
+                <div class="tube" id="tube">
+                    <div class="fill" id="fill" style="height:25%; background: linear-gradient(180deg,var(--nivel1-accent), var(--nivel4-accent));"></div>
+                </div>
+
+                <div class="bulb" aria-hidden="true">
+                    <div class="mercury" id="mercury" style="background: linear-gradient(180deg,var(--nivel2-accent), var(--nivel4-accent));"></div>
+                </div>
+
+                <div class="ticks" aria-hidden="true">
+                    <div class="tick"><span class="dot" style="background:var(--nivel4-bg); border-color:var(--nivel4-accent)"></span> Nivel 4</div>
+                    <div class="tick"><span class="dot" style="background:var(--nivel3-bg); border-color:var(--nivel3-accent)"></span> Nivel 3</div>
+                    <div class="tick"><span class="dot" style="background:var(--nivel2-bg); border-color:var(--nivel2-accent)"></span> Nivel 2</div>
+                    <div class="tick"><span class="dot" style="background:var(--nivel1-bg); border-color:var(--nivel1-accent)"></span> Nivel 1</div>
+                </div>
+            </div>
+
+            <label for="level" style="font-size:14px;color:var(--lila-borde);font-weight:600">Selecciona nivel (demo)</label>
+            <input id="level" type="range" min="1" max="4" step="1" value="1" style="width:100%;margin-top:6px" aria-label="Seleccionar nivel del violentómetro">
+        </div>
+    </div>
+
+    <div style="position: relative; width: 100%; height: 0; padding-top: 50%; box-shadow: 0 2px 8px rgba(63, 69, 81, 0.16); margin: 1.6em 0; overflow: hidden; border-radius: 8px;">
+        <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none;" src="https://www.canva.com/design/DAG6vpriQs8/ejw_Xz7RWkaLPbPoHSZNvA/view?embed" allowfullscreen title="Datos sobre violencia digital"></iframe>
+    </div>
+
+    <div style="position: relative; width: 100%; height: 0; padding-top: 12%; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden; border-radius: 8px;">
+        <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none;" src="https://www.canva.com/design/DAG6xBXTgc8/GTcz6rI4SCK46SiiqHCQ5Q/view?embed" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        // Obtener elementos del DOM
+        const levelInput = document.getElementById('level');
+        const fill = document.getElementById('fill');
+        const mercury = document.getElementById('mercury');
+
+        // Función para actualizar el termómetro
+        function updateThermometer() {
+            const level = parseInt(levelInput.value);
+            const heightPercent = level * 25; // Cada nivel representa un 25% de altura
+            fill.style.height = `${heightPercent}%`;
+
+            // Cambiar el color del mercurio según el nivel
+            switch (level) {
+                case 1:
+                    mercury.style.background = 'linear-gradient(180deg, var(--nivel1-accent), var(--nivel2-accent))';
+                    break;
+                case 2:
+                    mercury.style.background = 'linear-gradient(180deg, var(--nivel2-accent), var(--nivel3-accent))';
+                    break;
+                case 3:
+                    mercury.style.background = 'linear-gradient(180deg, var(--nivel3-accent), var(--nivel4-accent))';
+                    break;
+                case 4:
+                    mercury.style.background = 'linear-gradient(180deg, var(--nivel4-accent), var(--nivel4-accent))';
+                    break;
+            }
+        }
+
+        // Agregar evento al control deslizante
+        levelInput.addEventListener('input', updateThermometer);
+
+        // Inicializar el termómetro al cargar la página
+        updateThermometer();
+    </script>
+</body>
+</html>
